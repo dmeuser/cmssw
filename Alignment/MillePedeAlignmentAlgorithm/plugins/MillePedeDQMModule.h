@@ -11,6 +11,8 @@
  * @brief     DQM Plotter for PCL-Alignment
  */
 
+
+
 /*** system includes ***/
 #include <array>
 #include <memory>
@@ -26,7 +28,7 @@
 
 /*** DQM ***/
 #include "DQMServices/Core/interface/DQMEDHarvester.h"
-#include "DQMServices/Core/interface/DQMStore.h"
+#include "DQMServices/Core/interface/MonitorElement.h"
 
 /*** Records for ESWatcher ***/
 #include "Geometry/Records/interface/IdealGeometryRecord.h"
@@ -36,51 +38,63 @@
 /*** MillePede ***/
 #include "Alignment/MillePedeAlignmentAlgorithm/interface/MillePedeFileReader.h"
 
-class MillePedeDQMModule : public DQMEDHarvester {
-  //========================== PUBLIC METHODS ==================================
-public:  //====================================================================
-  MillePedeDQMModule(const edm::ParameterSet&);
-  ~MillePedeDQMModule() override;
 
-  void dqmEndJob(DQMStore::IBooker&, DQMStore::IGetter&) override;
+
+
+class MillePedeDQMModule : public DQMEDHarvester {
+
+  //========================== PUBLIC METHODS ==================================
+  public: //====================================================================
+
+    MillePedeDQMModule(const edm::ParameterSet&);
+    ~MillePedeDQMModule() override;
+
+    void dqmEndJob(DQMStore::IBooker &, DQMStore::IGetter &)  override;
 
   //========================= PRIVATE METHODS ==================================
-private:  //===================================================================
-  void beginRun(const edm::Run&, const edm::EventSetup&) override;
+  private: //===================================================================
 
-  void bookHistograms(DQMStore::IBooker&);
+    void beginRun(const edm::Run&, const edm::EventSetup&) override;
 
-  void fillExpertHistos();
+    void bookHistograms(DQMStore::IBooker&);
 
-  void fillExpertHisto(MonitorElement* histo,
-                       const std::array<double, 6>& cut,
-                       const std::array<double, 6>& sigCut,
-                       const std::array<double, 6>& maxMoveCut,
-                       const std::array<double, 6>& maxErrorCut,
-                       const std::array<double, 6>& obs,
-                       const std::array<double, 6>& obsErr);
+    void fillExpertHistos();
 
-  bool setupChanged(const edm::EventSetup&);
-  int getIndexFromString(const std::string& alignableId);
+    void fillExpertHisto(MonitorElement* histo,
+			 const std::array<double,6>& cut, 
+			 const std::array<double,6>& sigCut, 
+			 const std::array<double,6>& maxMoveCut, 
+			 const std::array<double,6>& maxErrorCut,
+                         const std::array<double,6>& obs,
+                         const std::array<double,6>& obsErr);
 
-  //========================== PRIVATE DATA ====================================
-  //============================================================================
+    bool setupChanged(const edm::EventSetup&);
+    int getIndexFromString(const std::string& alignableId);
 
-  const edm::ParameterSet mpReaderConfig_;
-  std::unique_ptr<AlignableTracker> tracker_;
-  std::unique_ptr<MillePedeFileReader> mpReader_;
+    //========================== PRIVATE DATA ====================================
+    //============================================================================
 
-  edm::ESWatcher<TrackerTopologyRcd> watchTrackerTopologyRcd_;
-  edm::ESWatcher<IdealGeometryRecord> watchIdealGeometryRcd_;
-  edm::ESWatcher<PTrackerParametersRcd> watchPTrackerParametersRcd_;
+    const edm::ParameterSet mpReaderConfig_;
+    std::unique_ptr<AlignableTracker> tracker_;
+    std::unique_ptr<MillePedeFileReader> mpReader_;
 
-  // Histograms
-  MonitorElement* h_xPos;
-  MonitorElement* h_xRot;
-  MonitorElement* h_yPos;
-  MonitorElement* h_yRot;
-  MonitorElement* h_zPos;
-  MonitorElement* h_zRot;
+    edm::ESWatcher<TrackerTopologyRcd> watchTrackerTopologyRcd_;
+    edm::ESWatcher<IdealGeometryRecord> watchIdealGeometryRcd_;
+    edm::ESWatcher<PTrackerParametersRcd> watchPTrackerParametersRcd_;
+
+    // Histograms
+    MonitorElement* h_xPos;
+    MonitorElement* h_xRot;
+    MonitorElement* h_yPos;
+    MonitorElement* h_yRot;
+    MonitorElement* h_zPos;
+    MonitorElement* h_zRot;
+    
+    MonitorElement* binariesAvalaible;
+    
+    std::string exitCodeStr;
+    MonitorElement* exitCode;
+
 };
 
 // define this as a plug-in
