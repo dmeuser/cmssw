@@ -53,14 +53,22 @@ private:  //===================================================================
   void fillStatusHisto(MonitorElement* statusHisto);
 
   void fillExpertHistos();
+  void fillExpertHistos_HG();
 
   void fillExpertHisto(MonitorElement* histo,
-                       const std::array<double, 6>& cut,
-                       const std::array<double, 6>& sigCut,
-                       const std::array<double, 6>& maxMoveCut,
-                       const std::array<double, 6>& maxErrorCut,
+                       const std::array<double, 8>& cut,
+                       const std::array<double, 8>& sigCut,
+                       const std::array<double, 8>& maxMoveCut,
+                       const std::array<double, 8>& maxErrorCut,
                        const std::array<double, 6>& obs,
                        const std::array<double, 6>& obsErr);
+  void fillExpertHisto_HG(std::map<std::string, MonitorElement*>& histo_map,
+                       const std::array<double, 8>& cut,
+                       const std::array<double, 8>& sigCut,
+                       const std::array<double, 8>& maxMoveCut,
+                       const std::array<double, 8>& maxErrorCut,
+                       const std::array<double, 820>& obs,
+                       const std::array<double, 820>& obsErr);
 
   bool setupChanged(const edm::EventSetup&);
   int getIndexFromString(const std::string& alignableId);
@@ -71,6 +79,8 @@ private:  //===================================================================
   const edm::ParameterSet mpReaderConfig_;
   std::unique_ptr<AlignableTracker> tracker_;
   std::unique_ptr<MillePedeFileReader> mpReader_;
+  
+  std::vector<std::pair<std::string,int>> layerVec;
 
   edm::ESWatcher<TrackerTopologyRcd> watchTrackerTopologyRcd_;
   edm::ESWatcher<IdealGeometryRecord> watchIdealGeometryRcd_;
@@ -83,6 +93,13 @@ private:  //===================================================================
   MonitorElement* h_yRot;
   MonitorElement* h_zPos;
   MonitorElement* h_zRot;
+  
+  std::map<std::string, MonitorElement*> h_xPos_HG;
+  std::map<std::string, MonitorElement*> h_xRot_HG;
+  std::map<std::string, MonitorElement*> h_yPos_HG;
+  std::map<std::string, MonitorElement*> h_yRot_HG;
+  std::map<std::string, MonitorElement*> h_zPos_HG;
+  std::map<std::string, MonitorElement*> h_zRot_HG;
 
   MonitorElement* statusResults;
   MonitorElement* binariesAvalaible;

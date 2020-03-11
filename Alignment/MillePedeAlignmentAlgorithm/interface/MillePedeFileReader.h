@@ -80,6 +80,21 @@ public:  //====================================================================
   const std::array<double, 6>& getZobsErr() const { return ZobsErr_; }
   const std::array<double, 6>& getTZobs() const { return tZobs_; }
   const std::array<double, 6>& getTZobsErr() const { return tZobsErr_; }
+  
+  const std::array<double, 820>& getXobs_HG() const { return Xobs_HG_; }
+  const std::array<double, 820>& getXobsErr_HG() const { return XobsErr_HG_; }
+  const std::array<double, 820>& getTXobs_HG() const { return tXobs_HG_; }
+  const std::array<double, 820>& getTXobsErr_HG() const { return tXobsErr_HG_; }
+
+  const std::array<double, 820>& getYobs_HG() const { return Yobs_HG_; }
+  const std::array<double, 820>& getYobsErr_HG() const { return YobsErr_HG_; }
+  const std::array<double, 820>& getTYobs_HG() const { return tYobs_HG_; }
+  const std::array<double, 820>& getTYobsErr_HG() const { return tYobsErr_HG_; }
+
+  const std::array<double, 820>& getZobs_HG() const { return Zobs_HG_; }
+  const std::array<double, 820>& getZobsErr_HG() const { return ZobsErr_HG_; }
+  const std::array<double, 820>& getTZobs_HG() const { return tZobs_HG_; }
+  const std::array<double, 820>& getTZobsErr_HG() const { return tZobsErr_HG_; }
 
   const AlignPCLThresholds::threshold_map getThresholdMap() const { return theThresholds_.get()->getThreshold_Map(); }
 
@@ -113,6 +128,7 @@ private:
   void readMillePedeResultFile();
   PclHLS getHLS(const Alignable*);
   std::string getStringFromHLS(PclHLS HLS);
+  int getIndexForHG(align::ID id, int detIndex);
 
   //========================== PRIVATE DATA ====================================
   //============================================================================
@@ -167,6 +183,21 @@ private:
   std::array<double, 6> ZobsErr_ = {{0., 0., 0., 0., 0., 0.}};
   std::array<double, 6> tZobs_ = {{0., 0., 0., 0., 0., 0.}};
   std::array<double, 6> tZobsErr_ = {{0., 0., 0., 0., 0., 0.}};
+  
+  std::array<double, 820> Xobs_HG_ = std::array<double, 820>();
+  std::array<double, 820> XobsErr_HG_ = std::array<double, 820>();
+  std::array<double, 820> tXobs_HG_ = std::array<double, 820>();
+  std::array<double, 820> tXobsErr_HG_ = std::array<double, 820>();
+
+  std::array<double, 820> Yobs_HG_ = std::array<double, 820>();
+  std::array<double, 820> YobsErr_HG_ = std::array<double, 820>();
+  std::array<double, 820> tYobs_HG_ = std::array<double, 820>();
+  std::array<double, 820> tYobsErr_HG_ = std::array<double, 820>();
+
+  std::array<double, 820> Zobs_HG_ = std::array<double, 820>();
+  std::array<double, 820> ZobsErr_HG_ = std::array<double, 820>();
+  std::array<double, 820> tZobs_HG_ = std::array<double, 820>();
+  std::array<double, 820> tZobsErr_HG_ = std::array<double, 820>();
 };
 
 const std::array<std::string, 8> coord_str = {{"X", "Y", "Z", "theta_X", "theta_Y", "theta_Z", "extra_DOF", "none"}};

@@ -51,6 +51,19 @@ void MillePedeDQMModule ::bookHistograms(DQMStore::IBooker& booker) {
   h_yRot = booker.book1D("Yrot", "Alignment fit #Delta#theta_{Y};;#murad", 36, 0., 36.);
   h_zPos = booker.book1D("Zpos", "Alignment fit #DeltaZ;;#mum", 36, 0., 36.);
   h_zRot = booker.book1D("Zrot", "Alignment fit #Delta#theta_{Z};;#murad", 36, 0., 36.);
+  
+  layerVec = {{"Layer1",12},{"Layer2",28},{"Layer3",44},{"Layer4",64},
+              {"Disk-3",112},{"Disk-2",112},{"Disk-1",112},
+              {"Disk1",112},{"Disk2",112},{"Disk3",112}};
+  
+  for (auto layer : layerVec) {
+    h_xPos_HG[layer.first] = booker.book1D("Xpos_HG_"+layer.first, "Alignment fit #DeltaX for "+layer.first+";;#mum", layer.second, 0., layer.second);
+    h_xRot_HG[layer.first] = booker.book1D("Xrot_HG_"+layer.first, "Alignment fit #Delta#theta_{X} for "+layer.first+";;#murad", layer.second, 0., layer.second);
+    h_yPos_HG[layer.first] = booker.book1D("Ypos_HG_"+layer.first, "Alignment fit #DeltaY for "+layer.first+";;#mum", layer.second, 0., layer.second);
+    h_yRot_HG[layer.first] = booker.book1D("Yrot_HG_"+layer.first, "Alignment fit #Delta#theta_{Y} for "+layer.first+";;#murad", layer.second, 0., layer.second);
+    h_zPos_HG[layer.first] = booker.book1D("Zpos_HG_"+layer.first, "Alignment fit #DeltaZ for "+layer.first+";;#mum", layer.second, 0., layer.second);
+    h_zRot_HG[layer.first] = booker.book1D("Zrot_HG_"+layer.first, "Alignment fit #Delta#theta_{Z} for "+layer.first+";;#murad", layer.second, 0., layer.second);
+  }
 
   statusResults = booker.book2D("statusResults", "Status of SiPixelAli PCL workflow;;", 6, 0., 6., 1, 0., 1.);
   binariesAvalaible = booker.bookInt("BinariesFound");
@@ -68,6 +81,7 @@ void MillePedeDQMModule ::dqmEndJob(DQMStore::IBooker& booker, DQMStore::IGetter
                                        << "Try to read MillePede results before initializing MillePedeFileReader";
   }
   fillExpertHistos();
+  fillExpertHistos_HG();
   fillStatusHisto(statusResults);
   binariesAvalaible->Fill(mpReader_->binariesAmount());
   auto theResults = mpReader_->getResults();
@@ -134,14 +148,14 @@ void MillePedeDQMModule ::fillStatusHisto(MonitorElement* statusHisto) {
 }
 
 void MillePedeDQMModule ::fillExpertHistos() {
-  std::array<double, 6> Xcut_, sigXcut_, maxMoveXcut_, maxErrorXcut_;
-  std::array<double, 6> tXcut_, sigtXcut_, maxMovetXcut_, maxErrortXcut_;
+  std::array<double, 8> Xcut_, sigXcut_, maxMoveXcut_, maxErrorXcut_;
+  std::array<double, 8> tXcut_, sigtXcut_, maxMovetXcut_, maxErrortXcut_;
 
-  std::array<double, 6> Ycut_, sigYcut_, maxMoveYcut_, maxErrorYcut_;
-  std::array<double, 6> tYcut_, sigtYcut_, maxMovetYcut_, maxErrortYcut_;
+  std::array<double, 8> Ycut_, sigYcut_, maxMoveYcut_, maxErrorYcut_;
+  std::array<double, 8> tYcut_, sigtYcut_, maxMovetYcut_, maxErrortYcut_;
 
-  std::array<double, 6> Zcut_, sigZcut_, maxMoveZcut_, maxErrorZcut_;
-  std::array<double, 6> tZcut_, sigtZcut_, maxMovetZcut_, maxErrortZcut_;
+  std::array<double, 8> Zcut_, sigZcut_, maxMoveZcut_, maxErrorZcut_;
+  std::array<double, 8> tZcut_, sigtZcut_, maxMovetZcut_, maxErrortZcut_;
 
   auto myMap = mpReader_->getThresholdMap();
 
@@ -198,10 +212,10 @@ void MillePedeDQMModule ::fillExpertHistos() {
 }
 
 void MillePedeDQMModule ::fillExpertHisto(MonitorElement* histo,
-                                          const std::array<double, 6>& cut,
-                                          const std::array<double, 6>& sigCut,
-                                          const std::array<double, 6>& maxMoveCut,
-                                          const std::array<double, 6>& maxErrorCut,
+                                          const std::array<double, 8>& cut,
+                                          const std::array<double, 8>& sigCut,
+                                          const std::array<double, 8>& maxMoveCut,
+                                          const std::array<double, 8>& maxErrorCut,
                                           const std::array<double, 6>& obs,
                                           const std::array<double, 6>& obsErr) {
   TH1F* histo_0 = histo->getTH1F();
@@ -240,6 +254,114 @@ void MillePedeDQMModule ::fillExpertHisto(MonitorElement* histo,
   }
 }
 
+void MillePedeDQMModule ::fillExpertHistos_HG() {
+  std::array<double, 8> Xcut_, sigXcut_, maxMoveXcut_, maxErrorXcut_;
+  std::array<double, 8> tXcut_, sigtXcut_, maxMovetXcut_, maxErrortXcut_;
+
+  std::array<double, 8> Ycut_, sigYcut_, maxMoveYcut_, maxErrorYcut_;
+  std::array<double, 8> tYcut_, sigtYcut_, maxMovetYcut_, maxErrortYcut_;
+
+  std::array<double, 8> Zcut_, sigZcut_, maxMoveZcut_, maxErrorZcut_;
+  std::array<double, 8> tZcut_, sigtZcut_, maxMovetZcut_, maxErrortZcut_;
+
+  auto myMap = mpReader_->getThresholdMap();
+
+  std::vector<std::string> alignablesList;
+  for (auto it = myMap.begin(); it != myMap.end(); ++it) {
+    alignablesList.push_back(it->first);
+  }
+
+  for (auto& alignable : alignablesList) {
+    int detIndex = getIndexFromString(alignable);
+
+    Xcut_[detIndex] = myMap[alignable].getXcut();
+    sigXcut_[detIndex] = myMap[alignable].getSigXcut();
+    maxMoveXcut_[detIndex] = myMap[alignable].getMaxMoveXcut();
+    maxErrorXcut_[detIndex] = myMap[alignable].getErrorXcut();
+
+    Ycut_[detIndex] = myMap[alignable].getYcut();
+    sigYcut_[detIndex] = myMap[alignable].getSigYcut();
+    maxMoveYcut_[detIndex] = myMap[alignable].getMaxMoveYcut();
+    maxErrorYcut_[detIndex] = myMap[alignable].getErrorYcut();
+
+    Zcut_[detIndex] = myMap[alignable].getZcut();
+    sigZcut_[detIndex] = myMap[alignable].getSigZcut();
+    maxMoveZcut_[detIndex] = myMap[alignable].getMaxMoveZcut();
+    maxErrorZcut_[detIndex] = myMap[alignable].getErrorZcut();
+
+    tXcut_[detIndex] = myMap[alignable].getThetaXcut();
+    sigtXcut_[detIndex] = myMap[alignable].getSigThetaXcut();
+    maxMovetXcut_[detIndex] = myMap[alignable].getMaxMoveThetaXcut();
+    maxErrortXcut_[detIndex] = myMap[alignable].getErrorThetaXcut();
+
+    tYcut_[detIndex] = myMap[alignable].getThetaYcut();
+    sigtYcut_[detIndex] = myMap[alignable].getSigThetaYcut();
+    maxMovetYcut_[detIndex] = myMap[alignable].getMaxMoveThetaYcut();
+    maxErrortYcut_[detIndex] = myMap[alignable].getErrorThetaYcut();
+
+    tZcut_[detIndex] = myMap[alignable].getThetaZcut();
+    sigtZcut_[detIndex] = myMap[alignable].getSigThetaZcut();
+    maxMovetZcut_[detIndex] = myMap[alignable].getMaxMoveThetaZcut();
+    maxErrortZcut_[detIndex] = myMap[alignable].getErrorThetaZcut();
+  }
+
+  fillExpertHisto_HG(h_xPos_HG, Xcut_, sigXcut_, maxMoveXcut_, maxErrorXcut_, mpReader_->getXobs_HG(), mpReader_->getXobsErr_HG());
+  fillExpertHisto_HG(
+      h_xRot_HG, tXcut_, sigtXcut_, maxMovetXcut_, maxErrortXcut_, mpReader_->getTXobs_HG(), mpReader_->getTXobsErr_HG());
+
+  fillExpertHisto_HG(h_yPos_HG, Ycut_, sigYcut_, maxMoveYcut_, maxErrorYcut_, mpReader_->getYobs_HG(), mpReader_->getYobsErr_HG());
+  fillExpertHisto_HG(
+      h_yRot_HG, tYcut_, sigtYcut_, maxMovetYcut_, maxErrortYcut_, mpReader_->getTYobs_HG(), mpReader_->getTYobsErr_HG());
+
+  fillExpertHisto_HG(h_zPos_HG, Zcut_, sigZcut_, maxMoveZcut_, maxErrorZcut_, mpReader_->getZobs_HG(), mpReader_->getZobsErr_HG());
+  fillExpertHisto_HG(
+      h_zRot_HG, tZcut_, sigtZcut_, maxMovetZcut_, maxErrortZcut_, mpReader_->getTZobs_HG(), mpReader_->getTZobsErr_HG());
+}
+
+void MillePedeDQMModule ::fillExpertHisto_HG(std::map<std::string, MonitorElement*>& histo_map,
+                                          const std::array<double, 8>& cut,
+                                          const std::array<double, 8>& sigCut,
+                                          const std::array<double, 8>& maxMoveCut,
+                                          const std::array<double, 8>& maxErrorCut,
+                                          const std::array<double, 820>& obs,
+                                          const std::array<double, 820>& obsErr) {
+  
+  
+  int currentStart = 0;
+  
+  for (auto layer : layerVec) {
+    
+    TH1F* histo_0 = histo_map[layer.first]->getTH1F();
+
+    double max_ = *std::max_element(maxMoveCut.begin(), maxMoveCut.end());
+
+    //~ histo_0->SetMinimum(-(max_));
+    //~ histo_0->SetMaximum(max_);
+    
+
+    for (int i = currentStart; i < (currentStart+layer.second); ++i) {
+      // fist obs.size() bins for observed movements
+      int bin = i-currentStart+1;
+      histo_0->SetBinContent(bin, obs[i]);
+      histo_0->SetBinError(bin, obsErr[i]);
+
+      //~ // then at bin 8,8+5,8+10,... for cutoffs
+      //~ // 5 bins is the space allocated for the 4 other thresholds + 1 empty separation bin
+      //~ histo_0->SetBinContent(8 + i * 5, cut[i]);
+
+      //~ // then at bin 9,9+5,9+10,... for significances
+      //~ histo_0->SetBinContent(9 + i * 5, sigCut[i]);
+
+      //~ // then at bin 10,10+5,10+10,... for maximum movements
+      //~ histo_0->SetBinContent(10 + i * 5, maxMoveCut[i]);
+
+      //~ // then at bin 11,11+5,11+10,... for maximum errors
+      //~ histo_0->SetBinContent(11 + i * 5, maxErrorCut[i]);
+    }
+    currentStart += layer.second;
+  }
+}
+
 bool MillePedeDQMModule ::setupChanged(const edm::EventSetup& setup) {
   bool changed{false};
 
@@ -266,6 +388,10 @@ int MillePedeDQMModule ::getIndexFromString(const std::string& alignableId) {
     return 5;
   } else if (alignableId == "TPEHalfCylinderXplusZplus") {
     return 4;
+  } else if (alignableId == "TPBLadder") {
+    return 6;
+  } else if (alignableId == "TPEPanel") {
+    return 7;
   } else {
     throw cms::Exception("LogicError") << "@SUB=MillePedeDQMModule::getIndexFromString\n"
                                        << "Retrieving conversion for not supported Alignable partition " << alignableId;
