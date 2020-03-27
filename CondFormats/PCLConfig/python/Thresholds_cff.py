@@ -243,7 +243,7 @@ default = cms.VPSet(
              ),
     
     cms.PSet(alignableId        = cms.string("TPEHalfCylinderXminusZplus"),
-             DOF                = cms.string("thetaZ"),        
+             DOF                = cms.string("thetaZ"),
              cut                = cms.double(30.0),
              sigCut             = cms.double(2.5),
              maxMoveCut         = cms.double(200.0),
@@ -292,11 +292,121 @@ default = cms.VPSet(
              ),
     
     cms.PSet(alignableId        = cms.string("TPEHalfCylinderXplusZplus"),
-             DOF                = cms.string("thetaZ"),                
+             DOF                = cms.string("thetaZ"),
              cut                = cms.double(30.0),
              sigCut             = cms.double(2.5),
              maxMoveCut         = cms.double(200.0),
              maxErrorCut        = cms.double(10.0)                         
+             ),
+
+    ### Barrel Pixel Ladder
+    cms.PSet(alignableId        = cms.string("TPBLadder"),
+             DOF                = cms.string("X"),
+             cut                = cms.double(5.0),
+             sigCut             = cms.double(2.5),
+             maxMoveCut         = cms.double(200.0),
+             maxErrorCut        = cms.double(10.0)
+             ),
+
+    cms.PSet(alignableId        = cms.string("TPBLadder"),
+             DOF                = cms.string("thetaX"),
+             cut                = cms.double(30.0),
+             sigCut             = cms.double(2.5),
+             maxMoveCut         = cms.double(200.0),
+             maxErrorCut        = cms.double(10.0)
+             ),
+
+    cms.PSet(alignableId        = cms.string("TPBLadder"),
+             DOF                = cms.string("Y"),
+             cut                = cms.double(10.0),
+             sigCut             = cms.double(2.5),
+             maxMoveCut         = cms.double(200.0),
+             maxErrorCut        = cms.double(10.0)
+             ),
+
+    cms.PSet(alignableId        = cms.string("TPBLadder"),
+             DOF                = cms.string("thetaY"),
+             cut                = cms.double(30.0),
+             sigCut             = cms.double(2.5),
+             maxMoveCut         = cms.double(200.0),
+             maxErrorCut        = cms.double(10.0)
+             ),
+
+    cms.PSet(alignableId        = cms.string("TPBLadder"),
+             DOF                = cms.string("Z"),
+             cut                = cms.double(15.0),
+             sigCut             = cms.double(2.5),
+             maxMoveCut         = cms.double(200.0),
+             maxErrorCut        = cms.double(10.0)
+             ),
+
+    cms.PSet(alignableId        = cms.string("TPBLadder"),
+             DOF                = cms.string("thetaZ"),
+             cut                = cms.double(30.0),
+             sigCut             = cms.double(2.5),
+             maxMoveCut         = cms.double(200.0),
+             maxErrorCut        = cms.double(10.0)
+             ),
+
+    ### EndCap Pixel Panel
+    cms.PSet(alignableId        = cms.string("TPEPanel"),
+             DOF                = cms.string("X"),
+             cut                = cms.double(5.0),
+             sigCut             = cms.double(2.5),
+             #  ~maxMoveCut         = cms.double(200.0),
+             #  ~maxErrorCut        = cms.double(10.0)
+             maxMoveCut         = cms.double(10000.0),
+             maxErrorCut        = cms.double(1000.0)
+             ),
+
+    cms.PSet(alignableId        = cms.string("TPEPanel"),
+             DOF                = cms.string("thetaX"),
+             cut                = cms.double(30.0),
+             sigCut             = cms.double(2.5),
+             #  ~maxMoveCut         = cms.double(200.0),
+             #  ~maxErrorCut        = cms.double(10.0)
+             maxMoveCut         = cms.double(10000.0),
+             maxErrorCut        = cms.double(1000.0)
+             ),
+
+    cms.PSet(alignableId        = cms.string("TPEPanel"),
+             DOF                = cms.string("Y"),
+             cut                = cms.double(10.0),
+             sigCut             = cms.double(2.5),
+             #  ~maxMoveCut         = cms.double(200.0),
+             #  ~maxErrorCut        = cms.double(10.0)
+             maxMoveCut         = cms.double(10000.0),
+             maxErrorCut        = cms.double(1000.0)
+             ),
+
+    cms.PSet(alignableId        = cms.string("TPEPanel"),
+             DOF                = cms.string("thetaY"),
+             cut                = cms.double(30.0),
+             sigCut             = cms.double(2.5),
+             #  ~maxMoveCut         = cms.double(200.0),
+             #  ~maxErrorCut        = cms.double(10.0)
+             maxMoveCut         = cms.double(10000.0),
+             maxErrorCut        = cms.double(1000.0)
+             ),
+
+    cms.PSet(alignableId        = cms.string("TPEPanel"),
+             DOF                = cms.string("Z"),
+             cut                = cms.double(15.0),
+             sigCut             = cms.double(2.5),
+             #  ~maxMoveCut         = cms.double(200.0),
+             #  ~maxErrorCut        = cms.double(10.0)
+             maxMoveCut         = cms.double(10000.0),
+             maxErrorCut        = cms.double(1000.0)
+             ),
+
+    cms.PSet(alignableId        = cms.string("TPEPanel"),
+             DOF                = cms.string("thetaZ"),
+             cut                = cms.double(30.0),
+             sigCut             = cms.double(2.5),
+             #  ~maxMoveCut         = cms.double(200.0),
+             #  ~maxErrorCut        = cms.double(10.0)
+             maxMoveCut         = cms.double(10000.0),
+             maxErrorCut        = cms.double(1000.0)
              )
     )
 

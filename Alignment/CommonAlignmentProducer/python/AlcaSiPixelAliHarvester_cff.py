@@ -20,8 +20,14 @@ SiPixelAliPedeAlignmentProducer.ParameterBuilder.Selector = cms.PSet(
     alignParams = cms.vstring(
         "PixelHalfBarrels,111111",
         "PXECHalfCylinders,111111",
-        )
     )
+)
+
+#################################################################
+# Modify the alignables in case of running with high granularity
+#################################################################
+from Configuration.ProcessModifiers.high_granularity_pcl_cff import high_granularity_pcl
+high_granularity_pcl.toModify(SiPixelAliPedeAlignmentProducer.ParameterBuilder.Selector,alignParams=cms.vstring("TrackerP1PXBLadder,111111","TrackerP1PXECPanel,111111"))
 
 SiPixelAliPedeAlignmentProducer.doMisalignmentScenario = False #True
 
@@ -52,8 +58,8 @@ SiPixelAliPedeAlignmentProducer.algoConfig.pedeSteerer.options = cms.vstring(
 SiPixelAliPedeAlignmentProducer.algoConfig.minNumHits = 10
 SiPixelAliPedeAlignmentProducer.saveToDB = True
 
-from DQMServices.Core.DQMEDHarvester import DQMEDHarvester
-dqmEnvSiPixelAli = DQMEDHarvester('DQMHarvestingMetadata',
+from DQMServices.Core.DQMEDAnalyzer import DQMEDAnalyzer
+dqmEnvSiPixelAli = DQMEDAnalyzer('DQMEventInfo',
                                   subSystemFolder = cms.untracked.string('AlCaReco'),  
                                   )
 
