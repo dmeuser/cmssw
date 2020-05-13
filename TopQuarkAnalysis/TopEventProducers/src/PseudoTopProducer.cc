@@ -464,7 +464,8 @@ bool PseudoTopProducer::isFromHadron(const reco::Candidate* p) const
     if ( mother->status() == 4 or mother->numberOfMothers() == 0 ) continue; // Skip incident beam
     const int pdgId = abs(mother->pdgId());
 
-    if ( pdgId > 100 ) return true;
+    // ~if ( pdgId > 100 ) return true;
+    if ( pdgId > 100 && pdgId<1000000) return true;   //Take SUSY particles into account
     else if ( isFromHadron(mother) ) return true;
   }
   return false;
