@@ -34,6 +34,7 @@ private:
   const edm::EDGetTokenT<edm::View<reco::Candidate> > genParticleToken_;
   const double minLeptonPt_, maxLeptonEta_, minJetPt_, maxJetEta_;
   const double wMass_, tMass_;
+  const bool clusterNeutrinosFromHadronsIntoJetsDilepton_;
   const double minLeptonPtDilepton_, maxLeptonEtaDilepton_;
   const double minDileptonMassDilepton_;
   const double minLeptonPtSemilepton_, maxLeptonEtaSemilepton_;
