@@ -19,6 +19,7 @@ PseudoTopProducer::PseudoTopProducer(const edm::ParameterSet& pset):
   maxJetEta_(pset.getParameter<double>("maxJetEta")),
   wMass_(pset.getParameter<double>("wMass")),
   tMass_(pset.getParameter<double>("tMass")),
+  clusterNeutrinosFromHadronsIntoJetsDilepton_(pset.getParameter<bool>("clusterNeutrinosFromHadronsIntoJetsDilepton")),
   minLeptonPtDilepton_(pset.getParameter<double>("minLeptonPtDilepton")),
   maxLeptonEtaDilepton_(pset.getParameter<double>("maxLeptonEtaDilepton")),
   minDileptonMassDilepton_(pset.getParameter<double>("minDileptonMassDilepton")),
@@ -158,7 +159,7 @@ void PseudoTopProducer::produce(edm::Event& event, const edm::EventSetup& eventS
 
   // Now proceed to jets.
   // Jets: anti-kt excluding the e, mu, nu, and photons in selected leptons.
-  //// Prepare input particle list. Remove particles used in lepton clusters, neutrinos
+  //// Prepare input particle list. Remove particles used in lepton clusters, neutrinos (depending on configuration)
   std::vector<fastjet::PseudoJet> fjJetInputs;
   fjJetInputs.reserve(nStables);
   for ( size_t i=0, n=finalStateHandle->size(); i<n; ++i ) {
@@ -167,7 +168,11 @@ void PseudoTopProducer::produce(edm::Event& event, const edm::EventSetup& eventS
     if ( std::isnan(p.pt()) or p.pt() <= 0 ) continue;
 
     const int absId = std::abs(p.pdgId());
-    if ( absId == 12 or absId == 14 or absId == 16 ) continue;
+    if (clusterNeutrinosFromHadronsIntoJetsDilepton_) { // Include neutrinos from hadrons to jet clustering
+      if (( absId == 12 or absId == 14 or absId == 16 ) && ( !isFromHadron(&p))) continue;
+    } else { // Exclude neutrinos from jet clustering
+      if ( absId == 12 or absId == 14 or absId == 16 ) continue;
+    }
     if ( lepDauIdxs.find(i) != lepDauIdxs.end() ) continue;
 
     fjJetInputs.push_back(fastjet::PseudoJet(p.px(), p.py(), p.pz(), p.energy()));
@@ -464,7 +469,8 @@ bool PseudoTopProducer::isFromHadron(const reco::Candidate* p) const
     if ( mother->status() == 4 or mother->numberOfMothers() == 0 ) continue; // Skip incident beam
     const int pdgId = abs(mother->pdgId());
 
-    if ( pdgId > 100 ) return true;
+    // ~if ( pdgId > 100 ) return true;
+    if ( pdgId > 100 && pdgId<1000000) return true;   //Take SUSY particles into account
     else if ( isFromHadron(mother) ) return true;
   }
   return false;
@@ -518,4 +524,3 @@ reco::GenParticleRef PseudoTopProducer::buildGenParticle(const reco::Candidate* 
 
   return reco::GenParticleRef(refHandle, outColl->size()-1);
 }
-

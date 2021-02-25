@@ -507,24 +507,27 @@ void TopDecaySubset::fillListing(
 				// next are the daughers of our W boson
         // for Pythia 6 this is wrong as the last W has no daughters at all!
         // instead the status 3 W has 3 daughters: q qbar' and W (WTF??!)
+        // CHANGED THE FOLLOWING PART TO CONSIDER THE LAST LEPTON/NEUTRINO IN THE DECAY CHAIN!!!
 				const reco::GenParticle* decaying_W = findLastParticleInChain(
 						static_cast<const reco::GenParticle*>(&*td));
 				for (reco::GenParticle::const_iterator wd = decaying_W->begin();
 						wd != decaying_W->end(); ++wd) {
 					if (!(std::abs(wd->pdgId()) == TopDecayID::WID)) {
+                  const reco::GenParticle* last_q = findLastParticleInChain(
+													static_cast<const reco::GenParticle*>(&*wd));
 						std::unique_ptr < reco::GenParticle
 								> qPtr(
-										new reco::GenParticle(wd->threeCharge(),
-												wd->p4(), wd->vertex(),
-												wd->pdgId(), wd->status(),
+										new reco::GenParticle(last_q->threeCharge(),
+												last_q->p4(), last_q->vertex(),
+												last_q->pdgId(), last_q->status(),
 												false));
 						target.push_back(*qPtr);
 						// increment & push index of the top daughter
 						wDaughters.push_back(++motherPartIdx_);
-						const reco::GenParticle* last_q = findLastParticleInChain(
-													static_cast<const reco::GenParticle*>(&*wd));
+						// ~const reco::GenParticle* last_q = findLastParticleInChain(
+													// ~static_cast<const reco::GenParticle*>(&*wd));
 						addRadiation(motherPartIdx_, last_q, target);
-						if (std::abs(wd->pdgId()) == TopDecayID::tauID) {
+						if (std::abs(last_q->pdgId()) == TopDecayID::tauID) {
 							// add tau daughters
 							// currently it adds k-mesons etc as well, which
 							// is not what we want.
